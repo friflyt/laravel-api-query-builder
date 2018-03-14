@@ -87,6 +87,39 @@ class QueryBuilder
 
         return $this;
     }
+    
+    public function overrideBuild($joins, $mainTable, $orderByFunction = 'addOrderByToQuery')
+    {
+        $this->prepare();
+
+        if ($this->hasWheres()) {
+            array_map([$this, 'addWhereToQuery'], $this->wheres);
+        }
+
+        if ($this->hasGroupBy()) {
+            $this->query->groupBy($this->groupBy);
+        }
+
+        if ($this->hasLimit()) {
+            $this->query->take($this->limit);
+        }
+
+        if ($this->hasOffset()) {
+            $this->query->skip($this->offset);
+        }
+
+        array_map([$this, $orderByFunction], $this->orderBy);
+
+        $this->query->with($this->includes);
+
+        $this->query->select([$mainTable.'.*']);
+
+        foreach ($joins as $joinItem) {
+            $this->query->leftJoin($joinItem['table'], $joinItem['mainTableField'], $joinItem['operator'], $joinItem['relationField']);
+        }
+
+        return $this;
+    }
 
     public function get()
     {
