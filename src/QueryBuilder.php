@@ -112,7 +112,7 @@ class QueryBuilder
 
         $this->query->with($this->includes);
 
-        $this->query->select([$mainTable.'.*']);
+        $this->query->select([$mainTable.'.*'])->distinct();
 
         foreach ($joins as $joinItem) {
             $this->query->leftJoin($joinItem['table'], $joinItem['mainTableField'], $joinItem['operator'], $joinItem['relationField']);
