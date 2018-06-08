@@ -88,7 +88,7 @@ class QueryBuilder
         return $this;
     }
     
-    public function overrideBuild($joins, $mainTable, $orderByFunction = 'addOrderByToQuery')
+    public function overrideBuild($joins, $mainTable, $orderByFunction = 'addOrderByToQuery', $isOnlyTrashed = false)
     {
         $this->prepare();
 
@@ -113,6 +113,10 @@ class QueryBuilder
         $this->query->with($this->includes);
 
         $this->query->select([$mainTable.'.*']);
+
+        if($isOnlyTrashed) {
+            $this->query->onlyTrashed();
+        }
 
         foreach ($joins as $joinItem) {
             $this->query->leftJoin($joinItem['table'], $joinItem['mainTableField'], $joinItem['operator'], $joinItem['relationField']);
